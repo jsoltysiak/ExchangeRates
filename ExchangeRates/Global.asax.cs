@@ -47,6 +47,8 @@ namespace ExchangeRates
 
             builder.RegisterType<CurrencyRatesService>().As<ICurrencyRatesService>();
             builder.RegisterType<HttpClientImpl>().As<IHttpClient>();
+            builder.RegisterType<XmlSerializerImpl>().As<IXmlSerializer>();
+
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
