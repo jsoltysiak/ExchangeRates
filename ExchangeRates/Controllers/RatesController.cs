@@ -1,18 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+using ExchangeRates.Infrastructure;
+using ExchangeRates.Models;
+using ExchangeRates.Services;
+using Newtonsoft.Json;
 
-namespace ExchangeRates.Controllers
+namespace ExchangeRates.Controllers.Api
 {
     public class RatesController : ApiController
     {
-        // GET: api/Rates
-        public IEnumerable<string> Get()
+        private readonly ICurrencyRatesService _exchangeRatesService;
+        private readonly IXmlSerializer _xmlSerializer;
+
+        public RatesController(ICurrencyRatesService exchangeRatesService, IXmlSerializer xmlSerializer)
         {
-            return new string[] { "value1", "value2" };
+            _exchangeRatesService = exchangeRatesService;
+            _xmlSerializer = xmlSerializer;
+        }
+
+        // GET: api/Rates
+        public async Task<IEnumerable<Row>> Get()
+        {
+            var currentRates =  await _exchangeRatesService.GetCurrentRates();
+
+            var currencyRates = _xmlSerializer.Deserialize<CurrencyRates>(currentRates);
+
+            var interestingCurrencies = new[] {"USD", "EUR"};
+            var filteredRates = currencyRates.Row.Where(r => interestingCurrencies.Any(c => c == r.SwiftCode));
+
+            return filteredRates;
         }
     }
 }
