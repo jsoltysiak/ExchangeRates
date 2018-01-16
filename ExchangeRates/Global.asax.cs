@@ -10,6 +10,8 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using ExchangeRates.Infrastructure;
+using ExchangeRates.Services;
 
 namespace ExchangeRates
 {
@@ -43,6 +45,8 @@ namespace ExchangeRates
             builder.RegisterWebApiFilterProvider(config);
             builder.RegisterWebApiModelBinderProvider();
 
+            builder.RegisterType<CurrencyRatesService>().As<ICurrencyRatesService>();
+            builder.RegisterType<HttpClientImpl>().As<IHttpClient>();
             var container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
             config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
