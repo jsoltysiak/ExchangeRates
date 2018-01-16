@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace ExchangeRates.Services
+namespace ExchangeRates.Infrastructure
 {
     public interface IHttpClient
     {
